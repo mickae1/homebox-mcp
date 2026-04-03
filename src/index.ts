@@ -16,9 +16,10 @@ let token: string | null = null;
 
 async function login() {
     const res = await api.post("/api/v1/users/login", { username: EMAIL, password: PASSWORD });
+    console.error("[LOGIN] Response data:", JSON.stringify(res.data));
     token = res.data.token;
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    console.error("Connecte a Homebox");
+    console.error(`[LOGIN] Token set: ${token?.substring(0, 20)}...`);
 }
 
 // 3. Creation du Serveur MCP

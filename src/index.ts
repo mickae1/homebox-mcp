@@ -18,7 +18,7 @@ async function login() {
     const res = await api.post("/api/v1/users/login", { username: EMAIL, password: PASSWORD });
     console.error("[LOGIN] Response data:", JSON.stringify(res.data));
     token = res.data.token;
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    api.defaults.headers.common["Authorization"] = token!.startsWith("Bearer ") ? token : `Bearer ${token}`;
     console.error(`[LOGIN] Token set: ${token?.substring(0, 20)}...`);
 }
 

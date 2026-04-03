@@ -8,12 +8,24 @@ Ce serveur permet à un assistant IA (comme Claude) d'interagir avec votre insta
 
 Ce serveur utilise le transport **SSE (Server-Sent Events)** au lieu de stdio. Cela permet de l'exécuter sur une machine distante (NAS Synology, serveur, etc.) et de s'y connecter depuis n'importe quel client MCP sur le réseau. Le serveur reste accessible tant que le conteneur Docker tourne.
 
+## Statut
+
+✅ **Fonctionnel** — Testé et validé avec une instance Homebox.
+
 ## Outils disponibles
 
 | Outil | Description |
 |---|---|
-| `search_items` | Recherche un objet dans l'inventaire par mot-clé |
+| `search_items` | Recherche des objets dans l'inventaire par mot-clé, avec filtres par emplacement et labels |
+| `get_item` | Récupère les détails complets d'un objet par son ID |
+| `create_item` | Ajoute un nouvel objet dans l'inventaire |
+| `update_item` | Met à jour un objet existant (nom, emplacement, labels, quantité...) |
+| `delete_item` | Supprime un objet de l'inventaire |
 | `list_locations` | Liste tous les emplacements de stockage |
+| `create_location` | Crée un nouvel emplacement de stockage |
+| `list_labels` | Liste tous les labels/catégories |
+| `create_label` | Crée un nouveau label |
+| `get_statistics` | Récupère les statistiques globales de l'inventaire |
 
 ## Installation avec Docker
 

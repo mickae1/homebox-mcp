@@ -53,14 +53,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (!token) await login();
 
+    console.error(`[TOOL] Appel: ${request.params.name}`, request.params.arguments);
+
     try {
         switch (request.params.name) {
             case "search_items": {
                 const searchRes = await api.get("/api/v1/items", { params: { q: request.params.arguments?.query } });
+                console.error(`[TOOL] search_items: ${searchRes.data.items?.length ?? 0} resultats`);
                 return { content: [{ type: "text" as const, text: JSON.stringify(searchRes.data, null, 2) }] };
             }
             case "list_locations": {
                 const locRes = await api.get("/api/v1/locations");
+                console.error(`[TOOL] list_locations: ${locRes.data.length ?? 0} emplacements`);
                 return { content: [{ type: "text" as const, text: JSON.stringify(locRes.data, null, 2) }] };
             }
             default:
@@ -68,6 +72,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
     } catch (e: unknown) {
         const message = e instanceof Error ? e.message : String(e);
+        console.error(`[TOOL] Erreur: ${message}`);
         return { content: [{ type: "text" as const, text: `Erreur: ${message}` }], isError: true };
     }
 });
@@ -77,10 +82,13 @@ const app = express();
 const transports = new Map<string, SSEServerTransport>();
 
 app.get("/sse", async (req, res) => {
+    console.error(`[SSE] Nouvelle connexion depuis ${req.ip}`);
     const transport = new SSEServerTransport("/messages", res);
     transports.set(transport.sessionId, transport);
+    console.error(`[SSE] Session ${transport.sessionId} creee`);
 
     res.on("close", () => {
+        console.error(`[SSE] Session ${transport.sessionId} fermee`);
         transports.delete(transport.sessionId);
     });
 
@@ -89,10 +97,12 @@ app.get("/sse", async (req, res) => {
 
 app.post("/messages", async (req, res) => {
     const sessionId = req.query.sessionId as string;
+    console.error(`[MSG] Requete pour session ${sessionId}`);
     const transport = transports.get(sessionId);
     if (transport) {
         await transport.handlePostMessage(req, res);
     } else {
+        console.error(`[MSG] Session ${sessionId} introuvable`);
         res.status(400).json({ error: "Session inconnue" });
     }
 });

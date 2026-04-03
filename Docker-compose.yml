@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  mcp-homebox:
+    image: ghcr.io/mickae1/homebox-mcp:main
+    container_name: mcp-homebox-syno
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - HOMEBOX_URL=${HOMEBOX_URL}
+      - HOMEBOX_EMAIL=${HOMEBOX_EMAIL}
+      - HOMEBOX_PASSWORD=${HOMEBOX_PASSWORD}
